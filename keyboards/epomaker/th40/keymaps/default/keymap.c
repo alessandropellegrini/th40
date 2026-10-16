@@ -20,31 +20,227 @@
 #include QMK_KEYBOARD_H
 #include "rdmctmzt_common.h"
 
+// Aliases for VIA lighting keycodes
+#ifndef RGB_SPI
+#    define RGB_SPI UG_SPDU
+#endif
+#ifndef RGB_SPD
+#    define RGB_SPD UG_SPDD
+#endif
+#ifndef BL_INC
+#    define BL_INC BL_UP
+#endif
+#ifndef BL_DEC
+#    define BL_DEC BL_DOWN
+#endif
+#ifndef RGB_HUI
+#    define RGB_HUI UG_HUEU
+#endif
+#ifndef RGB_HUD
+#    define RGB_HUD UG_HUED
+#endif
+#ifndef RGB_SAI
+#    define RGB_SAI UG_SATU
+#endif
+#ifndef RGB_SAD
+#    define RGB_SAD UG_SATD
+#endif
+#ifndef RGB_VAI
+#    define RGB_VAI UG_VALU
+#endif
+#ifndef RGB_VAD
+#    define RGB_VAD UG_VALD
+#endif
+
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_tkl_ansi(
-        KC_TAB,  KC_Q,    KC_W,      KC_E,    KC_R,    KC_T,     KC_Y,    KC_U,    KC_I,    KC_O,     KC_P,     KC_BSPC,
-        KC_CAPS, KC_A,    KC_S,      KC_D,    KC_F,    KC_G,     KC_H,    KC_J,    KC_K,    KC_L,               KC_ENT,
-        KC_LSFT, KC_SLSH, KC_Z,      KC_X,    KC_C,    KC_V,     KC_B,    KC_N,    KC_M,    KC_COMM,  KC_DOT,   KC_RSFT,
-        KC_LCTL, KC_LGUI, KC_LALT,                     KC_SPC,   MO(2),   KC_SPC,           KC_RALT,  KC_APP,   KC_RCTL
+        KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,     KC_P,     KC_BSPC,
+        KC_CAPS, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,               KC_ENT,
+        KC_LSFT, KC_GRV,  KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM,  KC_DOT,   KC_RSFT,
+        KC_LCTL, KC_LGUI, KC_LALT,                   KC_SPC,  MO(1),   KC_SPC,           KC_RALT,  KC_RALT,  KC_RCTL
     ),
     [1] = LAYOUT_tkl_ansi(
-        KC_TAB,  KC_Q,    KC_W,      KC_E,    KC_R,    KC_T,     KC_Y,    KC_U,    KC_I,    KC_O,     KC_P,     KC_BSPC,
-        KC_CAPS, KC_A,    KC_S,      KC_D,    KC_F,    KC_G,     KC_H,    KC_J,    KC_K,    KC_L,               KC_ENT,
-        KC_LSFT, KC_SLSH, KC_Z,      KC_X,    KC_C,    KC_V,     KC_B,    KC_N,    KC_M,    KC_COMM,  KC_DOT,   KC_RSFT,
-        KC_LCTL, KC_LALT, KC_LGUI,                     KC_SPC,   MO(3),   KC_SPC,           KC_RGUI,  KC_APP,   KC_RCTL
+        KC_TAB,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,     KC_0,     KC_DEL,
+        KC_CAPS, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_LBRC, KC_RBRC, KC_BSLS,            KC_ENT,
+        KC_LSFT, KC_SLSH, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_EQL,  KC_SCLN, KC_QUOT,  KC_UP,    KC_RALT,
+        KC_LCTL, KC_LGUI, KC_LALT,                   QK_BAT,  KC_NO,   MO(2),            KC_LEFT,  KC_DOWN,  KC_RGHT
     ),
     [2] = LAYOUT_tkl_ansi(
-        KC_ESC,   KC_1,    KC_2,     KC_3,    KC_4,    KC_5,     KC_6,    KC_7,    KC_8,    KC_9,     KC_0,     KC_BSLS,
-        KC_CAPS,  MD_BLE1, MD_BLE2,  MD_BLE3, MD_24G,  MD_USB,   RM_VALU, RM_SATD, KC_MINS, KC_EQL,             RM_TOGG,
-        KC_LSFT,  KC_GRV,  RM_NEXT,  RM_SPDD, RM_SPDU, KC_V,     RM_HUED, RM_VALD, RM_HUEU, KC_COMM,  KC_UP,    MW_CH,
-        EE_CLR,   QK_WLO,  KC_LALT,                    QK_BAT,   KC_NO,   KC_SPC,           KC_LEFT,  KC_DOWN,  KC_RIGHT
+        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,    KC_NO,    KC_NO,
+        KC_NO,   MD_BLE1, MD_BLE2, MD_BLE3, MD_24G,  MD_USB,  KC_NO,   KC_NO,   KC_NO,   KC_NO,              RGB_RTOG,
+        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,    KC_PGUP,  MO(3),
+        KC_NO,   KC_NO,   KC_NO,                     KC_NO,   KC_NO,   KC_NO,            KC_HOME,  KC_PGDN,  KC_END
     ),
     [3] = LAYOUT_tkl_ansi(
-        KC_ESC,   KC_1,    KC_2,     KC_3,    KC_4,    KC_5,     KC_6,    KC_7,    KC_8,    KC_9,     KC_0,     KC_BSLS,
-        KC_CAPS,  MD_BLE1, MD_BLE2,  MD_BLE3, MD_24G,  MD_USB,   RM_VALU, RM_SATD, KC_MINS, KC_EQL,             RM_TOGG,
-        KC_LSFT,  KC_GRV,  RM_NEXT,  RM_SPDD, RM_SPDU, KC_V,     RM_HUED, RM_VALD, RM_HUEU, KC_COMM,  KC_UP,    MW_CH,
-        EE_CLR,   KC_LALT, KC_LGUI,                    QK_BAT,   KC_NO,   KC_SPC,           KC_LEFT,  KC_DOWN,  KC_RIGHT
+        RGB_M_P, RGB_M_B, RGB_M_R, RGB_M_SW, RGB_M_SN, RGB_M_K, KC_6,    RGB_M_G, RGB_M_X, KC_NO,    KC_NO,    KC_NO,
+        RGB_SPI, BL_INC,  RGB_HUI, RGB_SAI,  RGB_VAI,  KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,              KC_NO,
+        RGB_SPD, KC_GRV,  RGB_HUD, RGB_SAD,  RGB_VAD,  BL_DEC,  KC_NO,   KC_NO,   KC_NO,   KC_QUOT,  KC_NO,    KC_NO,
+        KC_NO,   KC_NO,   KC_NO,                       KC_NO,   KC_NO,   KC_NO,            KC_NO,    KC_NO,    KC_NO
     )
 };
 // clang-format on
+
+// ===========================================================================
+// US-International Dead Keys FSM (Android Generic.kcm compliant)
+// ===========================================================================
+
+enum dead_key_state {
+    DK_NONE = 0,
+    DK_GRAVE, /* ` */
+    DK_ACUTE, /* ' */
+    DK_DIAER, /* " */
+    DK_CIRC,  /* ^ */
+    DK_TILDE  /* ~ */
+};
+
+static enum dead_key_state dk_state = DK_NONE;
+
+static void send_dead_literal(enum dead_key_state state) {
+    switch (state) {
+        case DK_GRAVE:
+            tap_code(KC_GRV);
+            break;
+        case DK_ACUTE:
+            tap_code(KC_QUOT);
+            break;
+        case DK_DIAER:
+            tap_code16(S(KC_QUOT));
+            break;
+        case DK_CIRC:
+            tap_code16(S(KC_6));
+            break;
+        case DK_TILDE:
+            tap_code16(S(KC_GRV));
+            break;
+        default:
+            break;
+    }
+}
+
+static bool is_valid_dead_target(enum dead_key_state state, uint16_t keycode) {
+    switch (state) {
+        case DK_GRAVE:
+        case DK_ACUTE:
+        case DK_CIRC:
+            return (keycode == KC_A || keycode == KC_E ||
+                    keycode == KC_I || keycode == KC_O ||
+                    keycode == KC_U);
+        case DK_DIAER:
+            return (keycode == KC_A || keycode == KC_E ||
+                    keycode == KC_I || keycode == KC_O ||
+                    keycode == KC_U || keycode == KC_Y);
+        case DK_TILDE:
+            return (keycode == KC_A || keycode == KC_N ||
+                    keycode == KC_O);
+        default:
+            return false;
+    }
+}
+
+static void trigger_android_kcm_deadkey(enum dead_key_state state) {
+    switch (state) {
+        case DK_GRAVE:
+            tap_code16(LALT(KC_GRV)); /* Generic.kcm: \u0300 */
+            break;
+        case DK_ACUTE:
+            tap_code16(LALT(KC_E));   /* Generic.kcm: \u0301 */
+            break;
+        case DK_CIRC:
+            tap_code16(LALT(KC_I));   /* Generic.kcm: \u0302 */
+            break;
+        case DK_TILDE:
+            tap_code16(LALT(KC_N));   /* Generic.kcm: \u0303 */
+            break;
+        case DK_DIAER:
+            tap_code16(LALT(KC_U));   /* Generic.kcm: \u0308 */
+            break;
+        default:
+            break;
+    }
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (!record->event.pressed) {
+        return true;
+    }
+
+    /* Ignora i modificatori puri e i cambi di layer per non resettare lo stato */
+    if ((keycode >= KC_LCTL && keycode <= KC_RGUI) ||
+        (keycode >= QK_TO && keycode <= QK_PERSISTENT_DEF_LAYER_MAX) ||
+        (keycode >= QK_LAYER_MOD && keycode <= QK_LAYER_MOD_MAX)) {
+        return true;
+    }
+
+    uint8_t mods = get_mods();
+    uint8_t weak_mods = get_weak_mods();
+    bool shifted = (mods | weak_mods) & MOD_MASK_SHIFT;
+    bool alt_ctrl_gui = (mods | weak_mods) & (MOD_MASK_CTRL | MOD_MASK_ALT | MOD_MASK_GUI);
+
+    /* 1. Rilevamento dell'innesco di una dead key sul Layer 3 quando lo stato e' neutro */
+    if (dk_state == DK_NONE && !alt_ctrl_gui && get_highest_layer(layer_state) == 3) {
+        if (keycode == KC_GRV) {
+            dk_state = shifted ? DK_TILDE : DK_GRAVE;
+            return false;
+        }
+        if (keycode == KC_QUOT) {
+            dk_state = shifted ? DK_DIAER : DK_ACUTE;
+            return false;
+        }
+        if (keycode == KC_6 && shifted) {
+            dk_state = DK_CIRC;
+            return false;
+        }
+    }
+
+    /* 2. Risoluzione dello stato quando una dead key e' gia' in attesa */
+    if (dk_state != DK_NONE) {
+        enum dead_key_state current_dk = dk_state;
+        dk_state = DK_NONE;
+
+        /* Spazio dopo dead key -> emette solo il carattere letterale */
+        if (keycode == KC_SPC) {
+            del_mods(MOD_MASK_SHIFT);
+            del_weak_mods(MOD_MASK_SHIFT);
+            send_dead_literal(current_dk);
+            set_mods(mods);
+            set_weak_mods(weak_mods);
+            return false;
+        }
+
+        /* Backspace o Esc -> annulla la dead key in attesa */
+        if (keycode == KC_BSPC || keycode == KC_ESC) {
+            return false;
+        }
+
+        /* Vocale/carattere compatibile -> invia la sequenza Alt di Generic.kcm + tasto */
+        if (!alt_ctrl_gui && is_valid_dead_target(current_dk, keycode)) {
+            del_mods(MOD_MASK_SHIFT);
+            del_weak_mods(MOD_MASK_SHIFT);
+
+            trigger_android_kcm_deadkey(current_dk);
+
+            set_mods(mods);
+            set_weak_mods(weak_mods);
+
+            /* Lascia proseguire QMK per inviare la vocale (maiuscola o minuscola) */
+            return true;
+        }
+
+        /* Caso speciale US-Intl: ' + c = ç */
+        if (!alt_ctrl_gui && current_dk == DK_ACUTE && keycode == KC_C) {
+            tap_code16(shifted ? LALT(S(KC_C)) : LALT(KC_C));
+            return false;
+        }
+
+        /* Qualsiasi altro tasto (es. consonante) -> emette il simbolo + il tasto premuto */
+        del_mods(MOD_MASK_SHIFT);
+        del_weak_mods(MOD_MASK_SHIFT);
+        send_dead_literal(current_dk);
+        set_mods(mods);
+        set_weak_mods(weak_mods);
+        return true;
+    }
+
+    return true;
+}
