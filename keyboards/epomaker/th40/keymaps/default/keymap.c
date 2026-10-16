@@ -64,19 +64,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,     KC_0,     KC_DEL,
         KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_LBRC, KC_RBRC, KC_BSLS,            KC_NO,
         KC_LSFT, KC_SLSH, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_EQL,  KC_SCLN, KC_QUOT,  KC_UP,    KC_RALT,
-        KC_LCTL, KC_LGUI, KC_LALT,                   QK_BAT,  KC_NO,   MO(3),            KC_LEFT,  KC_DOWN,  KC_RGHT
+        KC_LCTL, KC_NO,   KC_LALT,                   QK_BAT,  KC_NO,   MO(3),            KC_LEFT,  KC_DOWN,  KC_RGHT
     ),
     [2] = LAYOUT_tkl_ansi(
-        KC_NO,   BL_INC,   KC_PGUP,   RGB_SAI,   RGB_VAI,   RGB_SPI ,   KC_NO,   KC_NO,   KC_NO,   KC_NO,    KC_NO,    KC_NO,
-        KC_NO,   KC_HOME,   KC_PGDN,   KC_END,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,              RGB_RTOG,
-        KC_NO,   MD_BLE1, MD_BLE2, MD_BLE3, MD_24G,  MD_USB,  KC_NO,   KC_NO,   KC_NO,   KC_NO,    KC_NO,  KC_RALT,
-        KC_NO,   KC_NO,   KC_NO,                     KC_NO,   KC_NO,   KC_NO,            KC_NO,  KC_NO,  KC_NO
+        KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,   KC_F11,   KC_F12,
+        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,              RGB_RTOG,
+        KC_NO,   MD_BLE1, MD_BLE2, MD_BLE3, MD_24G,  MD_USB,  KC_NO,   KC_NO,   KC_NO,   KC_NO,    KC_NO,    KC_RALT,
+        KC_LCTL, KC_PSCR, KC_LALT,                   KC_NO,   KC_NO,   KC_NO,            KC_NO,    KC_NO,    KC_NO
     ),
     [3] = LAYOUT_tkl_ansi(
-        RGB_M_P, RGB_M_B, RGB_M_R, RGB_M_SW, RGB_M_SN, RGB_M_K, KC_6,    RGB_M_G, RGB_M_X, KC_NO,    KC_NO,    KC_NO,
-        KC_NO,   BL_INC,  RGB_HUI, RGB_SAI,  RGB_VAI,  RGB_SPI, KC_NO,   KC_NO,   KC_NO,   KC_NO,              KC_NO,
-        KC_LSFT, KC_GRV,  RGB_HUD, RGB_SAD,  RGB_VAD,  BL_DEC,  RGB_SPD, KC_NO,   KC_NO,   KC_QUOT,  KC_NO,    KC_RSFT,
-        KC_TRNS, KC_TRNS, KC_TRNS,                      KC_TRNS, KC_TRNS, KC_TRNS,          KC_TRNS,  KC_TRNS,  KC_TRNS
+        KC_NO,   KC_NO,   KC_PGUP, KC_NO,   KC_NO,   KC_NO,   KC_6,    KC_NO,   KC_NO,   KC_NO,    KC_NO,    KC_INS,
+        KC_NO,   KC_HOME, KC_PGDN, KC_END,  KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,              MS_BTN1,
+        KC_LSFT, KC_GRV,  KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_QUOT,  MS_UP,    MS_BTN2,
+        KC_TRNS, KC_TRNS, KC_TRNS,                   KC_TRNS, KC_TRNS, KC_TRNS,          MS_LEFT,  MS_DOWN,  MS_RGHT
     )
 };
 // clang-format on
@@ -167,10 +167,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return true;
     }
 
-    /* Ignora i modificatori puri e i cambi di layer per non resettare lo stato */
+    /* Ignora i modificatori puri, i cambi di layer e i tasti mouse per non resettare lo stato */
     if ((keycode >= KC_LCTL && keycode <= KC_RGUI) ||
         (keycode >= QK_TO && keycode <= QK_PERSISTENT_DEF_LAYER_MAX) ||
-        (keycode >= QK_LAYER_MOD && keycode <= QK_LAYER_MOD_MAX)) {
+        (keycode >= QK_LAYER_MOD && keycode <= QK_LAYER_MOD_MAX) ||
+        IS_MOUSE_KEYCODE(keycode)) {
         return true;
     }
 
@@ -294,4 +295,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
 
     return true;
+}
+
+void keyboard_post_init_user(void) {
+    rgb_matrix_enable();
+    rgb_matrix_mode(RGB_MATRIX_SOLID_COLOR);
+    rgb_matrix_sethsv(0, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS);
+}
+
+void eeconfig_init_user(void) {
+    rgb_matrix_enable();
+    rgb_matrix_mode(RGB_MATRIX_SOLID_COLOR);
+    rgb_matrix_sethsv(0, 0, RGB_MATRIX_MAXIMUM_BRIGHTNESS);
 }
