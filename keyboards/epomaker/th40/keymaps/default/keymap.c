@@ -58,18 +58,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,     KC_P,     KC_BSPC,
         KC_CAPS, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,               KC_ENT,
         KC_LSFT, KC_GRV,  KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM,  KC_DOT,   KC_RSFT,
-        KC_LCTL, KC_LGUI, KC_LALT,                   KC_SPC,  MO(1),   KC_SPC,           KC_RALT,  KC_RALT,  KC_RCTL
+        KC_LCTL, KC_LGUI, KC_LALT,                   KC_SPC,  MO(1),   KC_SPC,           KC_RALT,  MO(2),    KC_RCTL
     ),
     [1] = LAYOUT_tkl_ansi(
         KC_TAB,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,     KC_0,     KC_DEL,
-        KC_CAPS, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_LBRC, KC_RBRC, KC_BSLS,            KC_ENT,
-        KC_LSFT, KC_SLSH, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_EQL,  KC_SCLN, KC_QUOT,  KC_UP,    KC_RALT,
-        KC_LCTL, KC_LGUI, KC_LALT,                   QK_BAT,  KC_NO,   MO(2),            KC_LEFT,  KC_DOWN,  KC_RGHT
+        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_LBRC, KC_RBRC, KC_BSLS,            KC_NO,
+        KC_LSFT, KC_SLSH, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_EQL,  KC_SCLN, KC_QUOT,  KC_UP,    KC_RALT,
+        KC_LCTL, KC_LGUI, KC_LALT,                   QK_BAT,  KC_NO,   MO(3),            KC_LEFT,  KC_DOWN,  KC_RGHT
     ),
     [2] = LAYOUT_tkl_ansi(
         KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,    KC_NO,    KC_NO,
-        KC_NO,   MD_BLE1, MD_BLE2, MD_BLE3, MD_24G,  MD_USB,  KC_NO,   KC_NO,   KC_NO,   KC_NO,              RGB_RTOG,
-        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,    KC_PGUP,  MO(3),
+        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,              RGB_RTOG,
+        KC_NO,   MD_BLE1, MD_BLE2, MD_BLE3, MD_24G,  MD_USB,  KC_NO,   KC_NO,   KC_NO,   KC_NO,    KC_PGUP,  KC_RALT,
         KC_NO,   KC_NO,   KC_NO,                     KC_NO,   KC_NO,   KC_NO,            KC_HOME,  KC_PGDN,  KC_END
     ),
     [3] = LAYOUT_tkl_ansi(
@@ -177,8 +177,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     bool shifted = (mods | weak_mods) & MOD_MASK_SHIFT;
     bool alt_ctrl_gui = (mods | weak_mods) & (MOD_MASK_CTRL | MOD_MASK_ALT | MOD_MASK_GUI);
 
+    uint8_t current_layer = get_highest_layer(layer_state);
+
     /* 1. Rilevamento dell'innesco di una dead key sul Layer 3 quando lo stato e' neutro */
-    if (dk_state == DK_NONE && !alt_ctrl_gui && get_highest_layer(layer_state) == 3) {
+    if (dk_state == DK_NONE && !alt_ctrl_gui && current_layer == 3) {
         if (keycode == KC_GRV) {
             dk_state = shifted ? DK_TILDE : DK_GRAVE;
             return false;
@@ -195,6 +197,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     /* 2. Risoluzione dello stato quando una dead key e' gia' in attesa */
     if (dk_state != DK_NONE) {
+        /* Se l'utente preme una vocale tenendo ancora premuto fn + space (Layer 2),
+         * rimappa il tasto al codice alfabetico per evitare di innescare MD_BLE1 su A o MD_USB su G */
+        if (record->event.key.row == 2 && record->event.key.col == 1) {
+            keycode = KC_A;
+        } else if (record->event.key.row == 1 && record->event.key.col == 3) {
+            keycode = KC_E;
+        } else if (record->event.key.row == 1 && record->event.key.col == 8) {
+            keycode = KC_I;
+        } else if (record->event.key.row == 1 && record->event.key.col == 9) {
+            keycode = KC_O;
+        } else if (record->event.key.row == 1 && record->event.key.col == 7) {
+            keycode = KC_U;
+        } else if (record->event.key.row == 3 && record->event.key.col == 4) {
+            keycode = KC_C;
+        } else if (record->event.key.row == 3 && record->event.key.col == 7) {
+            keycode = KC_N;
+        } else if (record->event.key.row == 1 && record->event.key.col == 6) {
+            keycode = KC_Y;
+        }
+
         enum dead_key_state current_dk = dk_state;
         dk_state = DK_NONE;
 
@@ -223,7 +245,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             set_mods(mods);
             set_weak_mods(weak_mods);
 
-            /* Lascia proseguire QMK per inviare la vocale (maiuscola o minuscola) */
+            /* Se l'utente e' ancora su un layer secondario (es. Fn+Space premuto),
+             * emette la vocale esplicitamente e consuma l'evento per non attivare il comando del layer */
+            if (current_layer != 0) {
+                if (shifted) {
+                    tap_code16(S(keycode));
+                } else {
+                    tap_code(keycode);
+                }
+                return false;
+            }
+
+            /* Se siamo gia' su Layer 0, lascia proseguire QMK normalmente */
             return true;
         }
 
@@ -239,6 +272,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         send_dead_literal(current_dk);
         set_mods(mods);
         set_weak_mods(weak_mods);
+
+        if (current_layer != 0) {
+            if (shifted) {
+                tap_code16(S(keycode));
+            } else {
+                tap_code(keycode);
+            }
+            return false;
+        }
+
         return true;
     }
 
