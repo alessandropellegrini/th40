@@ -46,10 +46,10 @@
 #    define RGB_SAD UG_SATD
 #endif
 #ifndef RGB_VAI
-#    define RGB_VAI UG_VALU
+#    define RGB_VAI RM_VALU
 #endif
 #ifndef RGB_VAD
-#    define RGB_VAD UG_VALD
+#    define RGB_VAD RM_VALD
 #endif
 
 // clang-format off
@@ -68,8 +68,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     [2] = LAYOUT_tkl_ansi(
         KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,   KC_F11,   KC_F12,
-        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,              RGB_RTOG,
-        KC_NO,   MD_BLE1, MD_BLE2, MD_BLE3, MD_24G,  MD_USB,  KC_NO,   KC_NO,   KC_NO,   KC_NO,    KC_NO,    KC_RALT,
+        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   RGB_VAI,            RGB_RTOG,
+        KC_NO,   MD_BLE1, MD_BLE2, MD_BLE3, MD_24G,  MD_USB,  KC_NO,   KC_NO,   KC_NO,   KC_NO,    RGB_VAD,  KC_RALT,
         KC_LCTL, KC_PSCR, KC_LALT,                   KC_NO,   KC_NO,   KC_NO,            KC_NO,    KC_NO,    KC_NO
     ),
     [3] = LAYOUT_tkl_ansi(
@@ -167,11 +167,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return true;
     }
 
-    /* Ignora i modificatori puri, i cambi di layer e i tasti mouse per non resettare lo stato */
+    /* Fallback per keycode underglow/backlight se inviati da VIA */
+    if (keycode == UG_VALU || keycode == BL_UP) {
+        if (record->event.pressed) {
+            rgb_matrix_increase_val();
+        }
+        return false;
+    }
+    if (keycode == UG_VALD || keycode == BL_DOWN) {
+        if (record->event.pressed) {
+            rgb_matrix_decrease_val();
+        }
+        return false;
+    }
+
+    /* Ignora i modificatori puri, i cambi di layer, i tasti mouse e i tasti RGB per non resettare lo stato */
     if ((keycode >= KC_LCTL && keycode <= KC_RGUI) ||
         (keycode >= QK_TO && keycode <= QK_PERSISTENT_DEF_LAYER_MAX) ||
         (keycode >= QK_LAYER_MOD && keycode <= QK_LAYER_MOD_MAX) ||
-        IS_MOUSE_KEYCODE(keycode)) {
+        IS_MOUSE_KEYCODE(keycode) ||
+        IS_RGB_MATRIX_KEYCODE(keycode)) {
         return true;
     }
 
