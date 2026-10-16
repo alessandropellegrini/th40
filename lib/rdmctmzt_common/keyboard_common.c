@@ -208,36 +208,21 @@ void kb_led_point_flash_show(void) {
 }
 
 void kb_led_batt_number_show(void) {
-    if (es_stdby_pin_state == 1) {
-        // Charging animation - wave effect
-        if (Batt_Led_Count >= 2) {
-            Batt_Led_Count      = 0;
-            User_Key_Batt_Count = (User_Key_Batt_Count > 3) ? (User_Key_Batt_Count - 3) : 127;
-        }
+    uint8_t led_count = (Keyboard_Info.Batt_Number * BATTERY_LED_COUNT) / 100;
+    if (led_count > BATTERY_LED_COUNT) led_count = BATTERY_LED_COUNT;
 
-        uint8_t wave_offset = User_Key_Batt_Count;
-        for (uint8_t i = 0; i < BATTERY_LED_COUNT; i++) {
-            kb_set_led_color(Led_Batt_Index_Tab[i], 0, Led_Wave_Pwm_Tab[wave_offset], 0);
-            wave_offset = (wave_offset + 8) % 128;
-        }
-    } else if (es_stdby_pin_state == 2) {
-        // Fully charged - solid green
-        for (uint8_t i = 0; i < BATTERY_LED_COUNT; i++) {
-            kb_set_led_color(Led_Batt_Index_Tab[i], COLOR_GREEN);
-        }
-    } else {
-        // Normal battery display
-        uint8_t led_count = (Keyboard_Info.Batt_Number * BATTERY_LED_COUNT) / 100;
-        if (led_count > BATTERY_LED_COUNT) led_count = BATTERY_LED_COUNT;
+    uint8_t r, g, b;
+    kb_get_battery_color(Keyboard_Info.Batt_Number, &r, &g, &b);
 
-        uint8_t r, g, b;
-        kb_get_battery_color(Keyboard_Info.Batt_Number, &r, &g, &b);
-
-        for (uint8_t i = 0; i < led_count; i++) {
+    for (uint8_t i = 0; i < BATTERY_LED_COUNT; i++) {
+        if (i < led_count) {
             kb_set_led_color(Led_Batt_Index_Tab[i], r, g, b);
+        } else {
+            kb_led_off(Led_Batt_Index_Tab[i]);
         }
     }
 }
+
 
 void kb_user_point_show(void) {
     if (Led_Point_Count || Mac_Win_Point_Count) {
@@ -406,32 +391,11 @@ bool kb_rgb_matrix_indicators_common(uint8_t led_min, uint8_t led_max) {
 #endif
     kb_update_state_indicators();
 
-    // Show current connection mode when Fn key is held
-    if (Key_Fn_Status) {
+    // Show temporary mode indicator when triggered
+    if (Show_Mode_Indicator) {
         kb_show_current_connection_mode();
     }
 
-    // Show temporary mode/battery indicators when triggered
-    if (User_Key_Batt_Num_Show || Show_Mode_Indicator) {
-        // Reuse the connection mode indicator function
-        kb_show_current_connection_mode();
-
-        if (User_Key_Batt_Num_Show) {
-            uint8_t battery_leds = (Keyboard_Info.Batt_Number * BATTERY_LED_COUNT) / 100;
-            if (battery_leds > BATTERY_LED_COUNT) battery_leds = BATTERY_LED_COUNT;
-
-            uint8_t bat_r, bat_g, bat_b;
-            kb_get_battery_color(Keyboard_Info.Batt_Number, &bat_r, &bat_g, &bat_b);
-
-            for (uint8_t i = 0; i < BATTERY_LED_COUNT; i++) {
-                if (i < battery_leds) {
-                    kb_set_led_color(Led_Batt_Index_Tab[i], bat_r, bat_g, bat_b);
-                } else {
-                    kb_led_off(Led_Batt_Index_Tab[i]);
-                }
-            }
-        }
-    }
 
     if (User_Power_Low) {
         kb_led_power_low_show();
@@ -801,22 +765,7 @@ bool kb_process_record_common(uint16_t keycode, keyrecord_t *record) {
             }
         }
             return true;
-        case MO(2): { // FN
-            if (record->event.pressed) {
-                Key_Fn_Status = true;
-            } else {
-                Key_Fn_Status = false;
-            }
-        }
-            return true;
-        case MO(3): { // FN
-            if (record->event.pressed) {
-                Key_Fn_Status = true;
-            } else {
-                Key_Fn_Status = false;
-            }
-        }
-            return true;
+
         case EE_CLR: {
             if (record->event.pressed) {
                 Key_Reset_Status      = true;

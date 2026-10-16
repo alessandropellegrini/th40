@@ -61,22 +61,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LCTL, KC_LGUI, KC_LALT,                   KC_SPC,  MO(1),   KC_SPC,           KC_RALT,  MO(2),    KC_RCTL
     ),
     [1] = LAYOUT_tkl_ansi(
-        KC_TAB,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,     KC_0,     KC_DEL,
+        KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,     KC_0,     KC_DEL,
         KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_LBRC, KC_RBRC, KC_BSLS,            KC_NO,
         KC_LSFT, KC_SLSH, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_EQL,  KC_SCLN, KC_QUOT,  KC_UP,    KC_RALT,
         KC_LCTL, KC_LGUI, KC_LALT,                   QK_BAT,  KC_NO,   MO(3),            KC_LEFT,  KC_DOWN,  KC_RGHT
     ),
     [2] = LAYOUT_tkl_ansi(
-        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,    KC_NO,    KC_NO,
-        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,              RGB_RTOG,
-        KC_NO,   MD_BLE1, MD_BLE2, MD_BLE3, MD_24G,  MD_USB,  KC_NO,   KC_NO,   KC_NO,   KC_NO,    KC_PGUP,  KC_RALT,
-        KC_NO,   KC_NO,   KC_NO,                     KC_NO,   KC_NO,   KC_NO,            KC_HOME,  KC_PGDN,  KC_END
+        KC_NO,   BL_INC,   KC_PGUP,   RGB_SAI,   RGB_VAI,   RGB_SPI ,   KC_NO,   KC_NO,   KC_NO,   KC_NO,    KC_NO,    KC_NO,
+        KC_NO,   KC_HOME,   KC_PGDN,   KC_END,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,              RGB_RTOG,
+        KC_NO,   MD_BLE1, MD_BLE2, MD_BLE3, MD_24G,  MD_USB,  KC_NO,   KC_NO,   KC_NO,   KC_NO,    KC_NO,  KC_RALT,
+        KC_NO,   KC_NO,   KC_NO,                     KC_NO,   KC_NO,   KC_NO,            KC_NO,  KC_NO,  KC_NO
     ),
     [3] = LAYOUT_tkl_ansi(
         RGB_M_P, RGB_M_B, RGB_M_R, RGB_M_SW, RGB_M_SN, RGB_M_K, KC_6,    RGB_M_G, RGB_M_X, KC_NO,    KC_NO,    KC_NO,
-        RGB_SPI, BL_INC,  RGB_HUI, RGB_SAI,  RGB_VAI,  KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,              KC_NO,
-        RGB_SPD, KC_GRV,  RGB_HUD, RGB_SAD,  RGB_VAD,  BL_DEC,  KC_NO,   KC_NO,   KC_NO,   KC_QUOT,  KC_NO,    KC_NO,
-        KC_NO,   KC_NO,   KC_NO,                       KC_NO,   KC_NO,   KC_NO,            KC_NO,    KC_NO,    KC_NO
+        KC_NO,   BL_INC,  RGB_HUI, RGB_SAI,  RGB_VAI,  RGB_SPI, KC_NO,   KC_NO,   KC_NO,   KC_NO,              KC_NO,
+        KC_LSFT, KC_GRV,  RGB_HUD, RGB_SAD,  RGB_VAD,  BL_DEC,  RGB_SPD, KC_NO,   KC_NO,   KC_QUOT,  KC_NO,    KC_RSFT,
+        KC_TRNS, KC_TRNS, KC_TRNS,                      KC_TRNS, KC_TRNS, KC_TRNS,          KC_TRNS,  KC_TRNS,  KC_TRNS
     )
 };
 // clang-format on
@@ -99,23 +99,24 @@ static enum dead_key_state dk_state = DK_NONE;
 static void send_dead_literal(enum dead_key_state state) {
     switch (state) {
         case DK_GRAVE:
-            tap_code(KC_GRV);
+            tap_code_delay(KC_GRV, 15);
             break;
         case DK_ACUTE:
-            tap_code(KC_QUOT);
+            tap_code_delay(KC_QUOT, 15);
             break;
         case DK_DIAER:
-            tap_code16(S(KC_QUOT));
+            tap_code16_delay(S(KC_QUOT), 15);
             break;
         case DK_CIRC:
-            tap_code16(S(KC_6));
+            tap_code16_delay(S(KC_6), 15);
             break;
         case DK_TILDE:
-            tap_code16(S(KC_GRV));
+            tap_code16_delay(S(KC_GRV), 15);
             break;
         default:
             break;
     }
+    wait_ms(20);
 }
 
 static bool is_valid_dead_target(enum dead_key_state state, uint16_t keycode) {
@@ -141,23 +142,24 @@ static bool is_valid_dead_target(enum dead_key_state state, uint16_t keycode) {
 static void trigger_android_kcm_deadkey(enum dead_key_state state) {
     switch (state) {
         case DK_GRAVE:
-            tap_code16(LALT(KC_GRV)); /* Generic.kcm: \u0300 */
+            tap_code16_delay(LALT(KC_GRV), 15); /* Generic.kcm: \u0300 */
             break;
         case DK_ACUTE:
-            tap_code16(LALT(KC_E));   /* Generic.kcm: \u0301 */
+            tap_code16_delay(LALT(KC_E), 15);   /* Generic.kcm: \u0301 */
             break;
         case DK_CIRC:
-            tap_code16(LALT(KC_I));   /* Generic.kcm: \u0302 */
+            tap_code16_delay(LALT(KC_I), 15);   /* Generic.kcm: \u0302 */
             break;
         case DK_TILDE:
-            tap_code16(LALT(KC_N));   /* Generic.kcm: \u0303 */
+            tap_code16_delay(LALT(KC_N), 15);   /* Generic.kcm: \u0303 */
             break;
         case DK_DIAER:
-            tap_code16(LALT(KC_U));   /* Generic.kcm: \u0308 */
+            tap_code16_delay(LALT(KC_U), 15);   /* Generic.kcm: \u0308 */
             break;
         default:
             break;
     }
+    wait_ms(20);
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -189,7 +191,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             dk_state = shifted ? DK_DIAER : DK_ACUTE;
             return false;
         }
-        if (keycode == KC_6 && shifted) {
+        if (keycode == KC_6) {
             dk_state = DK_CIRC;
             return false;
         }
@@ -224,9 +226,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         if (keycode == KC_SPC) {
             del_mods(MOD_MASK_SHIFT);
             del_weak_mods(MOD_MASK_SHIFT);
+            send_keyboard_report();
             send_dead_literal(current_dk);
             set_mods(mods);
             set_weak_mods(weak_mods);
+            send_keyboard_report();
             return false;
         }
 
@@ -239,11 +243,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         if (!alt_ctrl_gui && is_valid_dead_target(current_dk, keycode)) {
             del_mods(MOD_MASK_SHIFT);
             del_weak_mods(MOD_MASK_SHIFT);
+            send_keyboard_report();
 
             trigger_android_kcm_deadkey(current_dk);
 
             set_mods(mods);
             set_weak_mods(weak_mods);
+            send_keyboard_report();
 
             /* Se l'utente e' ancora su un layer secondario (es. Fn+Space premuto),
              * emette la vocale esplicitamente e consuma l'evento per non attivare il comando del layer */
@@ -269,9 +275,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         /* Qualsiasi altro tasto (es. consonante) -> emette il simbolo + il tasto premuto */
         del_mods(MOD_MASK_SHIFT);
         del_weak_mods(MOD_MASK_SHIFT);
+        send_keyboard_report();
         send_dead_literal(current_dk);
         set_mods(mods);
         set_weak_mods(weak_mods);
+        send_keyboard_report();
 
         if (current_layer != 0) {
             if (shifted) {
