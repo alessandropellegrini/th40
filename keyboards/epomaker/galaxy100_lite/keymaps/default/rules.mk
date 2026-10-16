@@ -1,3 +1,0 @@
-VIA_ENABLE = yes
-EEPROM_DRIVER = custom
-ENCODER_MAP_ENABLE = yes
