@@ -66,7 +66,7 @@ static void send_hex_digit(char c) {
         kc = KC_A + (c - 'A');
     }
     if (kc != KC_NO) {
-        tap_code_delay(kc, 6);
+        tap_code_delay(kc, 2);
     }
 }
 
@@ -77,15 +77,15 @@ static void send_unicode_ibus(const char *hex) {
     clear_weak_mods();
     send_keyboard_report();
 
-    tap_code16_delay(LCTL(LSFT(KC_U)), 8);
-    wait_ms(12);
+    tap_code16_delay(LCTL(LSFT(KC_U)), 4);
+    wait_ms(4);
 
     while (*hex) {
         send_hex_digit(*hex++);
     }
 
-    wait_ms(12);
-    tap_code_delay(KC_SPC, 8);
+    wait_ms(4);
+    tap_code_delay(KC_SPC, 4);
 
     set_mods(saved_mods);
     set_weak_mods(saved_weak_mods);
