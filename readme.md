@@ -8,6 +8,12 @@
 
 This is a keyboard firmware based on the [tmk_keyboard firmware](https://github.com/tmk/tmk_keyboard) with some useful features for Atmel AVR and ARM controllers, and more specifically, the [OLKB product line](https://olkb.com), the [ErgoDox EZ](https://ergodox-ez.com) keyboard, and the Clueboard product line.
 
+## 🚨 Stripped repo remarks
+
+**This is a stripped down version of QMK based on [Carlos Eduardo's Fork](https://github.com/carlosedp/qmk_firmware/) of QMK where brilliant work to open some closed source keyboard firmware was performed. I started similar work in the past, but he finished before me, and with much better results, so kudos to him.**
+**I have stripped down the original code to support only the keyboard I am interested in, and implement my own version of the firmware. Therefore, this repo can be of little interest to the broader audience.**
+**Nevertheless, there is my implementation of a finite state machine for the TH40 keyboard that provides an US International layout without having to implement black magic on the machine where the keyboard is connected to. This can provide similar experience on different OSes.**
+
 ## 🚨 Forked firmware remarks
 
 **This fork holds keyboards not officially supported by the official QMK tree and have been incorporated by myself from other sources and/or adjusted to compile. Not all keyboards here have been tested and work 100% as the original firmware. Always know what you are doing and have a backup plan in case it doesn't work (know how to but your keyboard in BOOTLOADER mode and have the official firmware to revert).**

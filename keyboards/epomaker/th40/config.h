@@ -51,6 +51,7 @@
 #define RGB_MATRIX_DEFAULT_HUE 0
 #define RGB_MATRIX_DEFAULT_SAT 0
 #define RGB_MATRIX_DEFAULT_VAL 180
+#define RGB_MATRIX_DEFAULT_ON false
 #define RGB_MATRIX_SLEEP
 
 // BLE configuration for TH40
