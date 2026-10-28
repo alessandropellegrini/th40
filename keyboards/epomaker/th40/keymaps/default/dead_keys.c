@@ -92,6 +92,42 @@ static void send_unicode_ibus(const char *hex) {
     send_keyboard_report();
 }
 
+void dead_keys_send_super_a(void) {
+    if (android_mode) {
+        send_unicode_ibus("1d43");
+    } else {
+        uint8_t saved_mods = get_mods();
+        uint8_t saved_weak_mods = get_weak_mods();
+        clear_mods();
+        clear_weak_mods();
+        send_keyboard_report();
+
+        tap_code16_delay(LALT(KC_9), 10);
+
+        set_mods(saved_mods);
+        set_weak_mods(saved_weak_mods);
+        send_keyboard_report();
+    }
+}
+
+void dead_keys_send_degree(void) {
+    if (android_mode) {
+        send_unicode_ibus("00b0");
+    } else {
+        uint8_t saved_mods = get_mods();
+        uint8_t saved_weak_mods = get_weak_mods();
+        clear_mods();
+        clear_weak_mods();
+        send_keyboard_report();
+
+        tap_code16_delay(LALT(S(KC_8)), 10);
+
+        set_mods(saved_mods);
+        set_weak_mods(saved_weak_mods);
+        send_keyboard_report();
+    }
+}
+
 static void send_dead_literal(enum dead_key_state state) {
     switch (state) {
         case DK_GRAVE:

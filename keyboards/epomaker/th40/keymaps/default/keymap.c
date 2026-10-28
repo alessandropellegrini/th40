@@ -55,6 +55,8 @@
 
 enum custom_keycodes {
     TG_ANDR = SAFE_RANGE,
+    M_S_A,
+    M_DEG,
 };
 
 // clang-format off
@@ -72,9 +74,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LCTL, KC_NO,   KC_LALT,                   QK_BAT,  KC_NO,   MO(3),            KC_LEFT,  KC_DOWN,  KC_RGHT
     ),
     [2] = LAYOUT_tkl_ansi(
-        KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,   KC_F11,   KC_F12,
-        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   RGB_VAI,            RGB_RTOG,
-        KC_NO,   MD_BLE1, MD_BLE2, MD_BLE3, MD_24G,  MD_USB,  KC_NO,   KC_NO,   KC_NO,   KC_NO,    RGB_VAD,  KC_RALT,
+        KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   M_DEG,    KC_F11,   KC_F12,
+        KC_NO,   M_S_A,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   RGB_VAI,            RGB_RTOG,
+        KC_NO,   KC_NO,   MD_BLE1, MD_BLE2, MD_BLE3, MD_24G,  MD_USB,  KC_NO,   KC_NO,   KC_NO,    RGB_VAD,  KC_RALT,
         KC_LCTL, KC_PSCR, KC_LALT,                   KC_NO,   KC_NO,   KC_NO,            KC_NO,    KC_NO,    KC_NO
     ),
     [3] = LAYOUT_tkl_ansi(
@@ -115,6 +117,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     /* Toggle Android Unicode Mode on MO(1) + A */
     if (keycode == TG_ANDR || (current_layer == 1 && record->event.key.row == 2 && record->event.key.col == 1)) {
         dead_keys_toggle_mode();
+        return false;
+    }
+
+    /* Generazione ᵃ su MO(2) + A */
+    if (keycode == M_S_A || (current_layer == 2 && record->event.key.row == 2 && record->event.key.col == 1)) {
+        dead_keys_send_super_a();
+        return false;
+    }
+
+    /* Generazione ° su MO(2) + O */
+    if (keycode == M_DEG || (current_layer == 2 && record->event.key.row == 1 && record->event.key.col == 9)) {
+        dead_keys_send_degree();
         return false;
     }
 

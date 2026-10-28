@@ -65,8 +65,8 @@
 #define LED_CAP_INDEX 44        // Caps Lock indicator
 #define LED_WIN_L_INDEX 45      // Win Lock indicator
 #define LED_BATT_INDEX 38       // Battery status indicator
-#define LED_BLE_1_INDEX 24      // '`' key position
-#define LED_BLE_2_INDEX 25      // 'Z' key position
-#define LED_BLE_3_INDEX 26      // 'X' key position
-#define LED_2P4G_INDEX 27       // 'C' key position
-#define LED_USB_INDEX 28        // 'V' key position
+#define LED_BLE_1_INDEX 25      // 'Z' key position
+#define LED_BLE_2_INDEX 26      // 'X' key position
+#define LED_BLE_3_INDEX 27      // 'C' key position
+#define LED_2P4G_INDEX 28       // 'V' key position
+#define LED_USB_INDEX 29        // 'B' key position

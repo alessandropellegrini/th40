@@ -21,6 +21,10 @@ bool dead_keys_process(uint16_t keycode, keyrecord_t *record, uint8_t current_la
 void dead_keys_toggle_mode(void);
 bool dead_keys_get_mode(void);
 
+/* Generazione caratteri speciali (ᵃ e °) per Layer 2 */
+void dead_keys_send_super_a(void);
+void dead_keys_send_degree(void);
+
 /* Funzioni per indicatore LED su tasto A (LED 13) */
 bool dead_keys_is_flashing_led(void);
 bool dead_keys_led_is_green(void);
